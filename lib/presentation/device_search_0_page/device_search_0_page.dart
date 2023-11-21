@@ -37,8 +37,8 @@ class DeviceSearch0Page extends StatelessWidget {
                                     SizedBox(height: 64.v),
                                     CustomImageView(
                                         svgPath: ImageConstant.imgSearch,
-                                        height: 20.adaptSize,
-                                        width: 20.adaptSize),
+                                        height: 150.adaptSize,
+                                        width: 150.adaptSize),
                                     Spacer(),
                                     SizedBox(
                                         width: 228.h,

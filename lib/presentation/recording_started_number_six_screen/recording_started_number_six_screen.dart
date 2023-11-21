@@ -3,6 +3,7 @@ import 'package:pasindu_s_application4/core/app_export.dart';
 import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing_one_page.dart';
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
+import 'package:pasindu_s_application4/presentation/save_recording_screen/save_recording_screen.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_image.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_title.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/custom_app_bar.dart';
@@ -250,6 +251,9 @@ class RecordingStartedNumberSixScreen extends StatelessWidget {
                                 width: 71.adaptSize,
                                 margin: EdgeInsets.only(left: 34.h),
                                 padding: EdgeInsets.all(25.h),
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> SaveRecordingScreen()),);
+                                },
                                 decoration:
                                     IconButtonStyleHelper.fillPrimaryTL35,
                                 child: CustomImageView(
@@ -262,11 +266,7 @@ class RecordingStartedNumberSixScreen extends StatelessWidget {
                                     left: 48.h, top: 24.v, bottom: 23.v))
                           ]))
                     ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+           ));
   }
 
   ///Handling route based on bottom click actions

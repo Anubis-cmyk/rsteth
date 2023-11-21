@@ -262,11 +262,7 @@ class RecordingStartedNumberTwoScreen extends StatelessWidget {
                                     left: 48.h, top: 24.v, bottom: 23.v))
                           ]))
                     ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+           ));
   }
 
   ///Handling route based on bottom click actions

@@ -3,6 +3,7 @@ import 'package:pasindu_s_application4/core/app_export.dart';
 import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing_one_page.dart';
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
+import 'package:pasindu_s_application4/presentation/recording_screen/recording_screen.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_image.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_title.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/custom_app_bar.dart';
@@ -137,6 +138,8 @@ class DeviceSettingsScreen extends StatelessWidget {
     switch (type) {
       case BottomBarEnum.Device:
         return AppRoutes.deviceSearch0Page;
+      case BottomBarEnum.Recording:
+        return AppRoutes.recordingScreen;
       case BottomBarEnum.Library:
         return AppRoutes.recordingLibraryPage;
       case BottomBarEnum.Analysis:
@@ -151,6 +154,8 @@ class DeviceSettingsScreen extends StatelessWidget {
     switch (currentRoute) {
       case AppRoutes.deviceSearch0Page:
         return DeviceSearch0Page();
+      case AppRoutes.recordingScreen:
+        return RecordingScreen();
       case AppRoutes.recordingLibraryPage:
         return RecordingLibraryPage();
       case AppRoutes.analyzingOnePage:

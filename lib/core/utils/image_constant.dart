@@ -17,7 +17,7 @@ class ImageConstant {
   // Profile Setup One images
   static String imgGroup10 = '$imagePath/img_group10.svg';
 
-  static String imgGroup18 = '$imagePath/img_group18.png';
+  static String imgGroup18 = '$imagePath/img_group18.svg';
 
   // Profile Setup Three images
   static String imgGroup28 = '$imagePath/img_group28.svg';
@@ -64,6 +64,8 @@ class ImageConstant {
   static String imgSearch = '$imagePath/img_search.svg';
 
   static String imgNavdevice = '$imagePath/img_navdevice.svg';
+
+  static String imgNavrecording = '$imagePath/keyboard_voice.svg';
 
   static String imgNavlibrary = '$imagePath/img_navlibrary.svg';
 

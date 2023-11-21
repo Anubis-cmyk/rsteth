@@ -21,6 +21,12 @@ class CustomBottomBarState extends State<CustomBottomBar> {
       type: BottomBarEnum.Device,
     ),
     BottomMenuModel(
+      icon: ImageConstant.imgNavrecording,
+      activeIcon: ImageConstant.imgNavrecording,
+      title: "lbl_recording".tr,
+      type: BottomBarEnum.Recording,
+    ),
+    BottomMenuModel(
       icon: ImageConstant.imgNavlibrary,
       activeIcon: ImageConstant.imgNavlibrary,
       title: "lbl_library".tr,
@@ -122,6 +128,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
 
 enum BottomBarEnum {
   Device,
+  Recording,
   Library,
   Analysis,
 }

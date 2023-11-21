@@ -3,6 +3,8 @@ import 'package:pasindu_s_application4/core/app_export.dart';
 import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing_one_page.dart';
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
+import 'package:pasindu_s_application4/presentation/recording_started_number_one_screen/recording_started_number_one_screen.dart';
+import 'package:pasindu_s_application4/presentation/recording_started_number_six_screen/recording_started_number_six_screen.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_image.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_title.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/custom_app_bar.dart';
@@ -195,7 +197,7 @@ class RecordingInstructionScreen extends StatelessWidget {
                   SizedBox(height: 15.v),
                   GestureDetector(
                       onTap: () {
-                        onTapView(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> RecordingStartedNumberSixScreen()),);
                       },
                       child: Container(
                           height: 71.adaptSize,
@@ -205,11 +207,7 @@ class RecordingInstructionScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(35.h)))),
                   SizedBox(height: 9.v)
                 ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+             ));
   }
 
   ///Handling route based on bottom click actions

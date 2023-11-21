@@ -102,7 +102,7 @@ class ProfileSetupOneScreen extends StatelessWidget {
                                                       BorderRadius.circular(
                                                           20.h)))),
                                       CustomImageView(
-                                          imagePath: ImageConstant.imgGroup18,
+                                          svgPath: ImageConstant.imgGroup18,
                                           height: 237.v,
                                           width: 164.h,
                                           alignment: Alignment.centerRight),

@@ -103,18 +103,13 @@ class RegisterScreen extends StatelessWidget {
                                 padding: EdgeInsets.only(top: 6.v, bottom: 7.v),
                                 child: SizedBox(
                                     width: 97.h,
-                                    child: Divider(
-                                        color: theme
-                                            .colorScheme.secondaryContainer))),
+                                   )),
                             Text("lbl_or_sign_in_with".tr,
                                 style: theme.textTheme.bodySmall),
                             Padding(
                                 padding: EdgeInsets.only(top: 6.v, bottom: 7.v),
                                 child: SizedBox(
-                                    width: 96.h,
-                                    child: Divider(
-                                        color: theme
-                                            .colorScheme.secondaryContainer)))
+                                    width: 96.h,))
                           ]),
                       SizedBox(height: 14.v),
                       Row(

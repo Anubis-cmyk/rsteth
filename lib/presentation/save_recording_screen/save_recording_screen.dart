@@ -196,14 +196,11 @@ class SaveRecordingScreen extends StatelessWidget {
                           width: 215.h,
                           text: "lbl_save".tr,
                           onTap: () {
-                            onTapSave(context);
-                          })
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> RecordingLibraryPage()),);
+                          },
+                      )
                     ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+             ));
   }
 
   ///Handling route based on bottom click actions

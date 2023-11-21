@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pasindu_s_application4/core/app_export.dart';
 import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing_one_page.dart';
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
+import 'package:pasindu_s_application4/presentation/recording_instruction_screen/recording_instruction_screen.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
 import 'package:pasindu_s_application4/widgets/custom_bottom_bar.dart';
 import 'package:pasindu_s_application4/widgets/custom_elevated_button.dart';
@@ -78,15 +79,11 @@ class RecordingScreen extends StatelessWidget {
                                 margin: EdgeInsets.only(
                                     left: 14.h, top: 55.v, right: 13.h),
                                 onTap: () {
-                                  onTapStartrecording(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> RecordingInstructionScreen()),);
                                 })
                           ])))
                 ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+            ));
   }
 
   ///Handling route based on bottom click actions
@@ -94,6 +91,8 @@ class RecordingScreen extends StatelessWidget {
     switch (type) {
       case BottomBarEnum.Device:
         return AppRoutes.deviceSearch0Page;
+      case BottomBarEnum.Recording:
+        return AppRoutes.recordingScreen;
       case BottomBarEnum.Library:
         return AppRoutes.recordingLibraryPage;
       case BottomBarEnum.Analysis:
@@ -108,6 +107,8 @@ class RecordingScreen extends StatelessWidget {
     switch (currentRoute) {
       case AppRoutes.deviceSearch0Page:
         return DeviceSearch0Page();
+      case AppRoutes.recordingScreen:
+        return RecordingScreen();
       case AppRoutes.recordingLibraryPage:
         return RecordingLibraryPage();
       case AppRoutes.analyzingOnePage:

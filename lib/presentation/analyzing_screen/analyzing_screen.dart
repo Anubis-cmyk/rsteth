@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pasindu_s_application4/core/app_export.dart';
 import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing_one_page.dart';
+import 'package:pasindu_s_application4/presentation/analyzing_results_one_screen/analyzing_results_one_screen.dart';
+import 'package:pasindu_s_application4/presentation/analyzing_results_screen/analyzing_results_screen.dart';
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
 import 'package:pasindu_s_application4/widgets/app_bar/appbar_image.dart';
@@ -144,15 +146,14 @@ class AnalyzingScreen extends StatelessWidget {
                   CustomElevatedButton(
                       height: 40.v,
                       text: "lbl_processing".tr,
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> AnalyzingResultsScreen()),);
+                      },
                       margin:
                           EdgeInsets.only(left: 39.h, top: 19.v, right: 38.h),
                       buttonStyle: CustomButtonStyles.fillSecondaryContainer)
                 ])),
-            bottomNavigationBar:
-                CustomBottomBar(onChanged: (BottomBarEnum type) {
-              Navigator.pushNamed(
-                  navigatorKey.currentContext!, getCurrentRoute(type));
-            })));
+            ));
   }
 
   ///Handling route based on bottom click actions
@@ -160,6 +161,8 @@ class AnalyzingScreen extends StatelessWidget {
     switch (type) {
       case BottomBarEnum.Device:
         return AppRoutes.deviceSearch0Page;
+      case BottomBarEnum.Recording:
+        return AppRoutes.recordingScreen;
       case BottomBarEnum.Library:
         return AppRoutes.recordingLibraryPage;
       case BottomBarEnum.Analysis:
@@ -172,6 +175,8 @@ class AnalyzingScreen extends StatelessWidget {
   ///Handling page based on route
   Widget getCurrentPage(String currentRoute) {
     switch (currentRoute) {
+      case AppRoutes.deviceSearch0Page:
+        return DeviceSearch0Page();
       case AppRoutes.deviceSearch0Page:
         return DeviceSearch0Page();
       case AppRoutes.recordingLibraryPage:

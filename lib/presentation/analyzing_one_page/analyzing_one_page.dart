@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pasindu_s_application4/core/app_export.dart';
+import 'package:pasindu_s_application4/presentation/analyzing_screen/analyzing_screen.dart';
 import 'package:pasindu_s_application4/widgets/custom_elevated_button.dart';
 import 'package:pasindu_s_application4/widgets/custom_icon_button.dart';
+
+import 'LineChartScreen.dart';
 
 class AnalyzingOnePage extends StatelessWidget {
   const AnalyzingOnePage({Key? key}) : super(key: key);
@@ -130,15 +133,16 @@ class AnalyzingOnePage extends StatelessWidget {
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                             style: theme.textTheme.bodySmall!
-                                                .copyWith(height: 1.38))),
+                                                .copyWith(height: 1.38))
+                                    ),
                                     CustomElevatedButton(
                                         height: 40.v,
                                         text: "msg_analyze_recording".tr,
                                         margin: EdgeInsets.fromLTRB(
                                             39.h, 106.v, 38.h, 36.v),
-                                        onTap: () {
-                                          onTapAnalyze(context);
-                                        })
+                                      onTap: () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CustomLineChartScreen()),);
+                                      },)
                                   ])))
                     ])))));
   }

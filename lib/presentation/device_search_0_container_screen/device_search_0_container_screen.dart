@@ -4,6 +4,7 @@ import 'package:pasindu_s_application4/presentation/analyzing_one_page/analyzing
 import 'package:pasindu_s_application4/presentation/device_search_0_page/device_search_0_page.dart';
 import 'package:pasindu_s_application4/presentation/device_search_100_screen/device_search_100_screen.dart';
 import 'package:pasindu_s_application4/presentation/recording_library_page/recording_library_page.dart';
+import 'package:pasindu_s_application4/presentation/recording_screen/recording_screen.dart';
 import 'package:pasindu_s_application4/widgets/custom_bottom_bar.dart';
 
 import '../device_search_50_screen/device_search_50_screen.dart';
@@ -33,12 +34,13 @@ class DeviceSearch0ContainerScreen extends StatelessWidget {
                   navigatorKey.currentContext!, getCurrentRoute(type));
             })));
   }
-
   ///Handling route based on bottom click actions
   String getCurrentRoute(BottomBarEnum type) {
     switch (type) {
       case BottomBarEnum.Device:
         return AppRoutes.deviceSearch0Page;
+      case BottomBarEnum.Recording:
+        return AppRoutes.recordingScreen;
       case BottomBarEnum.Library:
         return AppRoutes.recordingLibraryPage;
       case BottomBarEnum.Analysis:
@@ -47,6 +49,7 @@ class DeviceSearch0ContainerScreen extends StatelessWidget {
         return "/";
     }
   }
+
 
   ///Handling page based on route
   Widget getCurrentPage(String currentRoute) {
@@ -57,6 +60,8 @@ class DeviceSearch0ContainerScreen extends StatelessWidget {
         return DeviceSearch50Screen();
       case AppRoutes.deviceSearch100Screen:
         return DeviceSearch100Screen();
+      case AppRoutes.recordingScreen:
+        return RecordingScreen();
       case AppRoutes.recordingLibraryPage:
         return RecordingLibraryPage();
       case AppRoutes.analyzingOnePage:

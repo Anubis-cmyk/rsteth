@@ -235,7 +235,7 @@ final Map<String, String> enUs = {
   "msg_example_gmail_com": "example@gmail.com",
   "msg_graphical_analysis": "Graphical Analysis",
   "msg_lorem_ipsum_dolor":
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
+      "rSteth",
   "msg_now_old_the_device2": "Now, old the device near ",
   "msg_successfully_deleted": "Successfully Deleted!",
 
