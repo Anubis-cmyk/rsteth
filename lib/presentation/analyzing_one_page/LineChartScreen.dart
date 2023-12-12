@@ -3,8 +3,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
-
 class CustomLineChartScreen extends StatefulWidget {
   @override
   _CustomLineChartScreenState createState() => _CustomLineChartScreenState();
@@ -13,16 +11,16 @@ class CustomLineChartScreen extends StatefulWidget {
 class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
   List<FlSpot> irData = [];
   List<FlSpot> redData = [];
-  Map<String, dynamic> additionalData = {}; // Store the additional data
+
+  Map<String, dynamic> additionalData = {};
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch data from the API when the screen loads
+    fetchData();
   }
 
-  // Function to fetch data from the API
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/chart-data'));
@@ -35,7 +33,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
         irData = irDataList
             .asMap()
             .entries
-            .where((entry) => entry.key < 100)
             .map((entry) {
           final x = entry.key.toDouble();
           final y = entry.value.toDouble();
@@ -45,7 +42,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
         redData = redDataList
             .asMap()
             .entries
-            .where((entry) => entry.key < 20) // Limit data to the first 20 points
             .map((entry) {
           final x = entry.key.toDouble();
           final y = entry.value.toDouble();
@@ -58,14 +54,12 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
           isLoading = false;
         });
       } else {
-        // Handle error
         print('Failed to load data: ${response.statusCode}');
         setState(() {
           isLoading = false;
         });
       }
     } catch (e) {
-      // Handle network or other exceptions
       print('Error fetching data: $e');
       setState(() {
         isLoading = false;
@@ -75,30 +69,42 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double minIrData = double.infinity;
+    double maxIrData = -double.infinity;
+    double minRedData = double.infinity;
+    double maxRedData = -double.infinity;
+
+    for (FlSpot spot in irData) {
+      if (spot.y < minIrData) minIrData = spot.y + 0.1;
+      if (spot.y > maxIrData) maxIrData = spot.y + 0.1;
+    }
+
+    for (FlSpot spot in redData) {
+      if (spot.y < minRedData) minRedData = spot.y + 0.1;
+      if (spot.y > maxRedData) maxRedData = spot.y + 0.1;
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Center the loading spinner in the middle of the screen
             if (isLoading)
               Center(
                 child: CircularProgressIndicator(),
               ),
 
-            // Chart Heading for IR Data
             if (!isLoading)
               Text(
                 'IR Data',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
 
-            // Display Line Chart for IR Data with top and bottom margins
             if (!isLoading)
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 16.0),
-                height: 350, // Specify the initial height
+              SizedBox(
+                width: double.infinity,
+                height: 350,
                 child: LineChart(
                   LineChartData(
                     gridData: FlGridData(show: false),
@@ -114,9 +120,9 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
                       ),
                     ),
                     minX: 0,
-                    maxX: irData.length.toDouble() - 1,
-                    minY: 0,
-                    maxY: 600, // Adjust this value based on your data range
+                    maxX: irData.length.toDouble() ,
+                    minY: minIrData - 100,
+                    maxY: maxIrData + 100,
                     lineBarsData: [
                       LineChartBarData(
                         spots: irData,
@@ -130,18 +136,16 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
                 ),
               ),
 
-            // Chart Heading for Red Data
             if (!isLoading)
               Text(
                 'Red Data',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
 
-            // Display Line Chart for Red Data with top and bottom margins
             if (!isLoading)
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 16.0),
-                height: 350, // Specify the initial height
+              SizedBox(
+                width: double.infinity,
+                height: 350,
                 child: LineChart(
                   LineChartData(
                     gridData: FlGridData(show: false),
@@ -158,8 +162,8 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
                     ),
                     minX: 0,
                     maxX: redData.length.toDouble() - 1,
-                    minY: 0,
-                    maxY: 600, // Adjust this value based on your data range
+                    minY: minRedData - 100,
+                    maxY: maxRedData + 100,
                     lineBarsData: [
                       LineChartBarData(
                         spots: redData,
@@ -173,14 +177,12 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
                 ),
               ),
 
-            // Additional Data Display
             if (!isLoading)
               Text(
                 'Additional Data',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
 
-            // Display additional data below the charts
             if (!isLoading)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
