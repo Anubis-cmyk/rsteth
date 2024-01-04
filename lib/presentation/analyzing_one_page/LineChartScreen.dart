@@ -11,6 +11,8 @@ class CustomLineChartScreen extends StatefulWidget {
 class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
   List<FlSpot> irData = [];
   List<FlSpot> redData = [];
+  List<FlSpot> BPMData = [];
+  List<FlSpot> Spo2Data = [];
 
   Map<String, dynamic> additionalData = {};
   bool isLoading = true;
@@ -23,12 +25,14 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/chart-data'));
+      final response = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/data_before_days/?ip_address=192.168.8.107&mac_address=48:3F:DA:4F:A4:98&days=55'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final irDataList = data['ir_data'] as List<dynamic>;
+        final irDataList = data['BPM'] as List<dynamic>;
         final redDataList = data['red_data'] as List<dynamic>;
+        final BPMDataList = data['BPM'] as List<dynamic>;
+        final Spo2DataList = data['SpO2'] as List<dynamic>;
 
         irData = irDataList
             .asMap()
@@ -40,6 +44,24 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
         }).toList();
 
         redData = redDataList
+            .asMap()
+            .entries
+            .map((entry) {
+          final x = entry.key.toDouble();
+          final y = entry.value.toDouble();
+          return FlSpot(x, y);
+        }).toList();
+
+        BPMData = BPMDataList
+            .asMap()
+            .entries
+            .map((entry) {
+          final x = entry.key.toDouble();
+          final y = entry.value.toDouble();
+          return FlSpot(x, y);
+        }).toList();
+
+        Spo2Data = Spo2DataList
             .asMap()
             .entries
             .map((entry) {
@@ -73,6 +95,10 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
     double maxIrData = -double.infinity;
     double minRedData = double.infinity;
     double maxRedData = -double.infinity;
+    double minBPMData = double.infinity;
+    double maxBPMData = -double.infinity;
+    double minSPo2Data = double.infinity;
+    double maxSPo2Data = -double.infinity;
 
     for (FlSpot spot in irData) {
       if (spot.y < minIrData) minIrData = spot.y + 0.1;
@@ -82,6 +108,16 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
     for (FlSpot spot in redData) {
       if (spot.y < minRedData) minRedData = spot.y + 0.1;
       if (spot.y > maxRedData) maxRedData = spot.y + 0.1;
+    }
+
+    for (FlSpot spot in BPMData) {
+      if (spot.y < minBPMData) minBPMData = spot.y + 0.1;
+      if (spot.y > maxBPMData) maxBPMData = spot.y + 0.1;
+    }
+
+    for (FlSpot spot in Spo2Data) {
+      if (spot.y < minSPo2Data) minSPo2Data = spot.y + 0.1;
+      if (spot.y > maxSPo2Data) maxSPo2Data = spot.y + 0.1;
     }
 
     return Scaffold(
@@ -138,6 +174,87 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
 
             if (!isLoading)
               Text(
+                'BPM',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+
+            if (!isLoading)
+              SizedBox(
+                width: double.infinity,
+                height: 350,
+                child: LineChart(
+                  LineChartData(
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(
+                      leftTitles: SideTitles(showTitles: true),
+                      bottomTitles: SideTitles(showTitles: true),
+                    ),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border.all(
+                        color: const Color(0xff37434d),
+                        width: 1,
+                      ),
+                    ),
+                    minX: 0,
+                    maxX: BPMData.length.toDouble() - 1,
+                    minY: minBPMData - 10,
+                    maxY: maxBPMData + 10,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: BPMData,
+                        isCurved: true,
+                        colors: [const Color(0xff004cfc)],
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (!isLoading)
+              Text(
+                'SpO2',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+
+            if (!isLoading)
+              SizedBox(
+                width: double.infinity,
+                height: 350,
+                child: LineChart(
+                  LineChartData(
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(
+                      leftTitles: SideTitles(showTitles: true),
+                      bottomTitles: SideTitles(showTitles: true),
+                    ),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border.all(
+                        color: const Color(0xff37434d),
+                        width: 1,
+                      ),
+                    ),
+                    minX: 0,
+                    maxX: Spo2Data.length.toDouble() - 1,
+                    minY: minSPo2Data - 10,
+                    maxY: maxSPo2Data + 10,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: Spo2Data,
+                        isCurved: true,
+                        colors: [const Color(0xff004cfc)],
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            if (!isLoading)
+              Text(
                 'Red Data',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
@@ -177,19 +294,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
                 ),
               ),
 
-            if (!isLoading)
-              Text(
-                'Additional Data',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-              ),
-
-            if (!isLoading)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: additionalData.keys.map((key) {
-                  return Text('$key: ${additionalData[key]}', style: TextStyle(color: Colors.black));
-                }).toList(),
-              ),
           ],
         ),
       ),
