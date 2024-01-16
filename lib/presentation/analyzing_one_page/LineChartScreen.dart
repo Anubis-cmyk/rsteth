@@ -253,7 +253,7 @@ import 'dart:convert';
 //
 //             if (!isLoading)
 //               Text(
-//                 'Red Data',
+//                 'Red Data', 
 //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
 //               ),
 //
@@ -301,6 +301,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+
+import '../../theme/theme_helper.dart';
 class CustomLineChart extends StatelessWidget {
   final List<FlSpot> data;
   final double minY;
@@ -332,7 +334,7 @@ class CustomLineChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
+            padding: const EdgeInsets.only(top: 8, bottom: 20),
             child: Text(
               title,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: lineColor),
@@ -384,8 +386,7 @@ class CustomLineChartScreen extends StatefulWidget {
 }
 
 class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
-  List<FlSpot> irData = [];
-  List<FlSpot> redData = [];
+  List<FlSpot> ECGData = [];
   List<FlSpot> BPMData = [];
   List<FlSpot> Spo2Data = [];
   List<FlSpot> SDNNData = [];
@@ -404,20 +405,14 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/data_before_days/?ip_address=192.168.8.107&mac_address=48:3F:DA:4F:A4:98&days=55'));
+      final response = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/vitals/data_before_days/?ip_address=127.0.1.1&mac_address=e4:5f:01:f6:3d:73&days=2'));
+      final ECGresponse = await http.get(Uri.parse('https://rsteth.uc.r.appspot.com/api/ecg/data_before_hours/?mac_address=e4:5f:01:f6:3d:73&hours=20&range=1000'));
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final irDataList = data['ir_data'] as List<dynamic>;
-        final redDataList = data['red_data'] as List<dynamic>;
-        final BPMDataList = data['BPM'] as List<dynamic>;
-        final Spo2DataList = data['SpO2'] as List<dynamic>;
-        final SDNNDataList = data['SDNN'] as List<dynamic>;
-        final RMSSDDataList = data['RMSSD'] as List<dynamic>;
-        final PNN50DataList = data['PNN50'] as List<dynamic>;
-        final HRVDataList = data['HRV'] as List<dynamic>;
+      if (ECGresponse.statusCode == 200) {
+        final data = json.decode(ECGresponse.body);
+        final ECGDataList = data['ECG'] as List<dynamic>;
 
-        irData = irDataList
+        ECGData = ECGDataList
             .asMap()
             .entries
             .map((entry) {
@@ -425,6 +420,27 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
           final y = entry.value.toDouble();
           return FlSpot(x, y);
         }).toList();
+
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        print('Failed to load data: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final BPMDataList = data['BPM'] as List<dynamic>;
+        final Spo2DataList = data['SpO2'] as List<dynamic>;
+        final SDNNDataList = data['SDNN'] as List<dynamic>;
+        final RMSSDDataList = data['RMSSD'] as List<dynamic>;
+        final PNN50DataList = data['PNN50'] as List<dynamic>;
+        final HRVDataList = data['HRV'] as List<dynamic>;
+
+
 
         RMSSDData = RMSSDDataList
             .asMap()
@@ -462,15 +478,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
           return FlSpot(x, y);
         }).toList();
 
-        redData = redDataList
-            .asMap()
-            .entries
-            .map((entry) {
-          final x = entry.key.toDouble();
-          final y = entry.value.toDouble();
-          return FlSpot(x, y);
-        }).toList();
-
         BPMData = BPMDataList
             .asMap()
             .entries
@@ -489,7 +496,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
           return FlSpot(x, y);
         }).toList();
 
-        additionalData = data['denoise_data'] as Map<String, dynamic>;
 
         setState(() {
           isLoading = false;
@@ -510,10 +516,6 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double minIrData = double.infinity;
-    double maxIrData = -double.infinity;
-    double minRedData = double.infinity;
-    double maxRedData = -double.infinity;
     double minBPMData = double.infinity;
     double maxBPMData = -double.infinity;
     double minSPo2Data = double.infinity;
@@ -527,15 +529,16 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
     double minHRVData = double.infinity;
     double maxHRVData = -double.infinity;
 
-    for (FlSpot spot in irData) {
-      if (spot.y < minIrData) minIrData = spot.y + 0.1;
-      if (spot.y > maxIrData) maxIrData = spot.y + 0.1;
+
+    double minECGData = double.infinity;
+    double maxECGData = -double.infinity;
+
+    for (FlSpot spot in ECGData) {
+      if (spot.y < minECGData) minECGData = spot.y + 0.1;
+      if (spot.y > maxECGData) maxECGData = spot.y + 0.1;
     }
 
-    for (FlSpot spot in redData) {
-      if (spot.y < minRedData) minRedData = spot.y + 0.1;
-      if (spot.y > maxRedData) maxRedData = spot.y + 0.1;
-    }
+
 
     for (FlSpot spot in BPMData) {
       if (spot.y < minBPMData) minBPMData = spot.y + 0.1;
@@ -568,100 +571,154 @@ class _CustomLineChartScreenState extends State<CustomLineChartScreen> {
     }
 
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Center(
-              child: Text(
-                'Analyzed Data',
-                style: TextStyle(
-                  color: Colors.deepPurple,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          title:Center(
+            child: Text(
+              'Analyzed Data',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            if (isLoading)
-              Center(
-                child: CircularProgressIndicator(),
+          ),
+          automaticallyImplyLeading: false,
+          backgroundColor: theme.colorScheme.primary,
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                text: "rSteth",
               ),
+              Tab(
+                text: "Pulse Ox",
+              ),
+              Tab(
+                text: "BP",
+              ),
+              Tab(
+                text: "ECG",
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
 
-            if (!isLoading)
-              CustomLineChart(
-                data: redData,
-                minY: minRedData,
-                maxY: maxRedData,
-                lineColor: const Color(0xD984339B),
-                title: 'Red Data',
-              ),
-            if (!isLoading)
-              CustomLineChart(
-                data: irData,
-                minY: minIrData,
-                maxY: maxIrData,
-                lineColor: const Color(0xff4af699),
-                title: 'IR Data',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: BPMData,
-                minY: minBPMData,
-                maxY: maxBPMData,
-                lineColor: const Color(0xD904B4ff),
-                title: 'BPM',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: Spo2Data,
-                minY: minSPo2Data,
-                maxY: maxSPo2Data,
-                lineColor: const Color(0xD9FF0000),
-                title: 'SpO2',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: SDNNData,
-                minY: minSDNNData,
-                maxY: maxSDNNData,
-                lineColor: const Color(0xD9FF7300),
-                title: 'SDNN',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: RMSSDData,
-                minY: minRMSSDData,
-                maxY: maxRMSSDData,
-                lineColor: const Color(0xD9367F86),
-                title: 'RMSSD',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: PNN50Data,
-                minY: minPNN50Data,
-                maxY: maxPNN50Data,
-                lineColor: const Color(0xD92C8F3A),
-                title: 'PNN50',
-              ),
-
-            if (!isLoading)
-              CustomLineChart(
-                data: HRVData,
-                minY: minHRVData,
-                maxY: maxHRVData,
-                lineColor: const Color(0xD961469F),
-                title: 'HRV',
-              ),
+                  if (isLoading)
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
 
 
-          ],
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: BPMData,
+                      minY: minBPMData,
+                      maxY: maxBPMData,
+                      lineColor: const Color(0xD904B4ff),
+                      title: 'BPM',
+                    ),
+
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: Spo2Data,
+                      minY: minSPo2Data,
+                      maxY: maxSPo2Data,
+                      lineColor: const Color(0xD9FF0000),
+                      title: 'SpO2',
+                    ),
+
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: SDNNData,
+                      minY: minSDNNData,
+                      maxY: maxSDNNData,
+                      lineColor: const Color(0xD9FF7300),
+                      title: 'SDNN',
+                    ),
+
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: RMSSDData,
+                      minY: minRMSSDData,
+                      maxY: maxRMSSDData,
+                      lineColor: const Color(0xD9367F86),
+                      title: 'RMSSD',
+                    ),
+
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: PNN50Data,
+                      minY: minPNN50Data,
+                      maxY: maxPNN50Data,
+                      lineColor: const Color(0xD92C8F3A),
+                      title: 'PNN50',
+                    ),
+
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: HRVData,
+                      minY: minHRVData,
+                      maxY: maxHRVData,
+                      lineColor: const Color(0xD961469F),
+                      title: 'HRV',
+                    ),
+
+
+                ],
+              ),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: Spo2Data,
+                      minY: minSPo2Data,
+                      maxY: maxSPo2Data,
+                      lineColor: const Color(0XFF9C6AFF),
+                      title: 'Pulse Ox',
+                    ),
+                ],
+              )
+            ),
+            Center(
+              child: Column(
+                children: [
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: BPMData,
+                      minY: minBPMData,
+                      maxY: maxBPMData,
+                      lineColor: const Color(0XFF9C6AFF),
+                      title: 'BP',
+                    ),
+                ],
+              )
+            ),
+            Center(
+              child: Column(
+                children: [
+                  if (!isLoading)
+                    CustomLineChart(
+                      data: ECGData,
+                      minY: minECGData - 500,
+                      maxY: maxECGData + 500,
+                      lineColor: const Color(0XFF9C6AFF),
+                      title: 'ECG',
+                    ),
+                ],
+              )
+            ),
+          ]
         ),
       ),
     );
